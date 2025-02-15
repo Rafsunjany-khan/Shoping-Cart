@@ -5,10 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <style>
+        /* CSS for modal content layout */
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-body .row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-body .row .col-name {
+            flex: 0 0 50%;
+            font-weight: bold;
+        }
+
+        .modal-body .row .col-quantity,
+        .modal-body .row .col-price,
+        .modal-body .row .col-total {
+            flex: 0 0 10%;
+            text-align: center;
+        }
+
+        .modal-body .row .col-price,
+        .modal-body .row .col-total {
+            font-weight: normal;
+        }
+
+        .modal-body .grand-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="bg-dark py-2 text-light text-center">Your Cart</h1>
+        <h1 class="bg-primary py-3 text-light text-center"> --- Your Cart ---</h1>
 
         <!-- Cart Section -->
         <div id="cart-section" class="cart-section mt-5">
@@ -35,64 +73,31 @@
             </table>
 
             <div class="text-center mt-4">
-                <button id="clear-cart" class="btn btn-danger me-3 px-4">Clear Cart</button>
-                <button id="checkout" class="btn btn-success px-4">Proceed to Checkout</button>
+                <button id="clear-cart" class="btn btn-danger me-3 px-4 mb-3">Clear Cart</button>
+                <button id="checkout" class="btn btn-success px-4 mb-3" data-bs-toggle="modal" data-bs-target="#checkoutModal">Proceed to Checkout</button>
             </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const checkoutItems = document.getElementById('checkout-items');
-            const checkoutTotal = document.getElementById('checkout-total');
-
-            // Display Cart Items
-            function displayCart() {
-                if (cart.length === 0) {
-                    checkoutItems.innerHTML = '<tr><td colspan="5" class="text-center">Your cart is empty</td></tr>';
-                    checkoutTotal.textContent = "0.00";
-                    return;
-                }
-
-                checkoutItems.innerHTML = cart.map(item => `
-                    <tr>
-                        <td><img src="${item.product.image}" alt="${item.product.name}" class="img-fluid" style="width: 80px; height: 80px; object-fit: contain;"></td>
-                        <td>${item.product.name}</td>
-                        <td>${item.quantity}</td>
-                        <td>$${item.product.price.toFixed(2)}</td>
-                        <td>$${(item.product.price * item.quantity).toFixed(2)}</td>
-                    </tr>
-                `).join('');
-
-                const totalPrice = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
-                checkoutTotal.textContent = totalPrice.toFixed(2);
-            }
-
-            // Clear Cart
-            function clearCart() {
-                localStorage.removeItem('cart'); // Clear cart from localStorage
-                window.location.href = 'index.html'; // Redirect to home page
-            }
-
-            // Proceed to Checkout
-            function proceedToCheckout() {
-                if (cart.length === 0) {
-                    alert("Your cart is empty. Add items before proceeding.");
-                    return;
-                }
-                window.location.href = 'checkoutcart.html'; // Redirect to checkout page
-            }
-
-            // Event Listeners
-            document.getElementById('clear-cart').addEventListener('click', clearCart);
-            document.getElementById('checkout').addEventListener('click', proceedToCheckout);
-
-            // Initial Calls
-            displayCart();
-        });
-    </script>
-
-    <script src="js/script.js"></script> <!-- Load script.js at the end -->
+    <!-- Checkout Modal -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="checkoutModalLabel">Checkout Summary</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Cart details will be dynamically added here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="confirm-checkout">Confirm Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/viewcart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
