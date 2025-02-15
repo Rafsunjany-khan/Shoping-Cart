@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1 class="bg-dark py-2 text-light text-center">Checkout</h1>
+
+        <!-- Checkout Summary Section -->
+        <div id="checkout-section" class="checkout-section mt-5">
+            <h2>Checkout Summary</h2>
+            <ul id="checkout-items" class="list-group mb-3">
+                <!-- Cart items will be dynamically added here -->
+            </ul>
+            <p>Total: $<span id="checkout-total">0.00</span></p>
+
+            <!-- Checkout Buttons -->
+            <button id="purchase" class="btn btn-success">Complete Purchase</button>
+            <button id="exit" class="btn btn-danger">Exit</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Load cart from localStorage
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const checkoutItems = document.getElementById('checkout-items');
+        const checkoutTotal = document.getElementById('checkout-total');
+        const purchaseButton = document.getElementById('purchase');
+        const exitButton = document.getElementById('exit');
+
+        // Display Cart Items in Checkout
+        function displayCheckoutSummary() {
+            checkoutItems.innerHTML = cart.map(item => {
+                return `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${item.product.name} x ${item.quantity}</span>
+                        <span>$${(item.product.price * item.quantity).toFixed(2)}</span>
+                    </li>
+                `;
+            }).join('');
+
+            const totalPrice = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+            checkoutTotal.textContent = totalPrice.toFixed(2);
+        }
+
+        // Handle Purchase Button Click
+        purchaseButton.addEventListener('click', function() {
+            // You can implement actual form submission logic here (e.g., sending data to a backend)
+
+            alert('Thank you for your purchase! Your order has been processed.');
+            localStorage.removeItem('cart'); // Clear the cart after purchase
+            window.location.href = 'index.html'; // Redirect to homepage after successful purchase
+        });
+
+        // Handle Exit Button Click
+        exitButton.addEventListener('click', function() {
+            window.location.href = 'index.html'; // Redirect to homepage without making a purchase
+        });
+
+        // Initial Calls
+        displayCheckoutSummary();
+    </script>
+</body>
+</html>
